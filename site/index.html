@@ -1,0 +1,1312 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Resumo prático e visual de DevOps & DataOps: CALMS, SDLC, Shift Left, CI/CD, runbooks e publicação com GitHub Actions."
+    />
+    <meta property="og:title" content="DevOps & DataOps — CI/CD e Runbooks" />
+    <meta
+      property="og:description"
+      content="Uma página única, moderna e objetiva condensando DevOps & DataOps com foco em CI/CD e resposta a incidentes."
+    />
+    <meta property="og:type" content="website" />
+    <title>DevOps & DataOps — CI/CD e Runbooks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg0: #070a12;
+        --bg1: #0b1022;
+        --card: rgba(255, 255, 255, 0.06);
+        --card2: rgba(255, 255, 255, 0.04);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.72);
+        --faint: rgba(255, 255, 255, 0.55);
+        --line: rgba(255, 255, 255, 0.12);
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+        --radius: 18px;
+        --radius2: 12px;
+
+        --devops: #43d3ff;
+        --dataops: #ffb020;
+        --accent: #8b5cff;
+        --ok: #3dffb5;
+        --warn: #ff647c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(1100px 600px at 20% 10%, rgba(67, 211, 255, 0.14), transparent 60%),
+          radial-gradient(900px 550px at 90% 20%, rgba(255, 176, 32, 0.12), transparent 55%),
+          radial-gradient(900px 650px at 60% 92%, rgba(139, 92, 255, 0.13), transparent 55%),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        color: var(--text);
+        font-family:
+          "Plus Jakarta Sans",
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+        line-height: 1.55;
+        letter-spacing: -0.01em;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .container {
+        width: min(1100px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      .skip {
+        position: absolute;
+        left: -999px;
+        top: 10px;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        z-index: 9999;
+      }
+
+      .skip:focus {
+        left: 12px;
+      }
+
+      header.topbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(10px);
+        background: linear-gradient(
+          180deg,
+          rgba(7, 10, 18, 0.88),
+          rgba(7, 10, 18, 0.55)
+        );
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .topbar-inner {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 0;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 190px;
+      }
+
+      .logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        background:
+          radial-gradient(circle at 35% 35%, rgba(67, 211, 255, 0.85), rgba(67, 211, 255, 0.1) 62%),
+          radial-gradient(circle at 65% 70%, rgba(255, 176, 32, 0.8), rgba(255, 176, 32, 0.06) 62%),
+          radial-gradient(circle at 70% 28%, rgba(139, 92, 255, 0.8), rgba(139, 92, 255, 0.08) 60%);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .brand-title {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+      }
+
+      .brand-title strong {
+        font-family: "Space Grotesk", ui-sans-serif, system-ui;
+        font-size: 14px;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-title span {
+        font-size: 12px;
+        color: var(--faint);
+      }
+
+      nav.primary {
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+
+      .navlink {
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 13px;
+        transition: background 160ms ease, border-color 160ms ease;
+      }
+
+      .navlink:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.12);
+        text-decoration: none;
+      }
+
+      .navlink[aria-current="page"] {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.18);
+        color: rgba(255, 255, 255, 0.92);
+      }
+
+      main {
+        padding: 34px 0 60px;
+      }
+
+      .hero {
+        padding: 26px 0 6px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .hero-card {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.04));
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 22px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .hero-card::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        background:
+          radial-gradient(800px 420px at 20% 10%, rgba(67, 211, 255, 0.11), transparent 52%),
+          radial-gradient(700px 420px at 85% 20%, rgba(255, 176, 32, 0.1), transparent 55%),
+          radial-gradient(700px 500px at 65% 95%, rgba(139, 92, 255, 0.1), transparent 55%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .hero-card > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .kicker {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(0, 0, 0, 0.22);
+        color: rgba(255, 255, 255, 0.86);
+        white-space: nowrap;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--ok);
+        box-shadow: 0 0 0 4px rgba(61, 255, 181, 0.15);
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-family: "Space Grotesk", ui-sans-serif, system-ui;
+        font-size: clamp(30px, 4.2vw, 44px);
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+      }
+
+      .subtitle {
+        margin: 0 0 16px;
+        color: var(--muted);
+        font-size: 15px;
+        max-width: 64ch;
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .meta .pill {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .hero-side {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 14px;
+      }
+
+      .statbox {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--radius);
+        padding: 16px;
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+      }
+
+      .statbox h2 {
+        margin: 0 0 10px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      .mini {
+        margin: 0;
+        color: var(--faint);
+        font-size: 13px;
+      }
+
+      .list {
+        margin: 10px 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .li {
+        display: grid;
+        grid-template-columns: 18px 1fr;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 10px 10px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.22);
+      }
+
+      .icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.86);
+      }
+
+      section {
+        margin-top: 26px;
+        scroll-margin-top: 82px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      h2.section-title {
+        margin: 0;
+        font-family: "Space Grotesk", ui-sans-serif, system-ui;
+        font-size: 20px;
+        letter-spacing: -0.02em;
+      }
+
+      .section-desc {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        max-width: 78ch;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--radius);
+        padding: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 14px;
+        letter-spacing: -0.01em;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .tagrow {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .tag {
+        font-size: 12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        background: rgba(0, 0, 0, 0.18);
+        color: rgba(255, 255, 255, 0.86);
+      }
+
+      .tag.devops {
+        border-color: rgba(67, 211, 255, 0.3);
+        background: rgba(67, 211, 255, 0.08);
+      }
+
+      .tag.dataops {
+        border-color: rgba(255, 176, 32, 0.32);
+        background: rgba(255, 176, 32, 0.08);
+      }
+
+      .tag.shift {
+        border-color: rgba(139, 92, 255, 0.35);
+        background: rgba(139, 92, 255, 0.1);
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 10px;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 86px 1fr;
+        gap: 12px;
+        padding: 12px;
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      .step .label {
+        font-family: "Space Grotesk", ui-sans-serif, system-ui;
+        font-size: 12px;
+        letter-spacing: -0.01em;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .step .label strong {
+        display: block;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.18);
+      }
+
+      .table th,
+      .table td {
+        padding: 12px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        text-align: left;
+        font-size: 13px;
+        vertical-align: top;
+      }
+
+      .table th {
+        color: rgba(255, 255, 255, 0.86);
+        background: rgba(255, 255, 255, 0.05);
+        font-weight: 600;
+      }
+
+      .table td {
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .callout {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--radius);
+        padding: 16px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .callout p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .callout strong {
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .runbook-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .runbook-card {
+        background: rgba(0, 0, 0, 0.22);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--radius);
+        padding: 14px;
+      }
+
+      .runbook-card h3 {
+        margin: 0 0 8px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .runbook-card ul {
+        margin: 0;
+        padding-left: 18px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 13px;
+      }
+
+      .runbook-steps {
+        margin: 0;
+        padding-left: 18px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 13px;
+      }
+
+      .runbook-steps li {
+        margin: 8px 0;
+      }
+
+      .kbd {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        font-size: 12px;
+        padding: 3px 8px;
+        border-radius: 9px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.86);
+        white-space: nowrap;
+      }
+
+      footer {
+        margin-top: 40px;
+        padding: 24px 0 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--faint);
+        font-size: 13px;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: start;
+      }
+
+      .refs {
+        display: grid;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .ref {
+        display: grid;
+        grid-template-columns: 12px 1fr;
+        gap: 10px;
+        align-items: start;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.18);
+      }
+
+      .ref i {
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.15);
+        margin-top: 3px;
+      }
+
+      .ref span {
+        color: rgba(255, 255, 255, 0.86);
+      }
+
+      .top {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        opacity: 0;
+        transform: translateY(6px);
+        transition: opacity 180ms ease, transform 180ms ease;
+        pointer-events: none;
+      }
+
+      .top a {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(0, 0, 0, 0.42);
+        backdrop-filter: blur(10px);
+        color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        text-decoration: none;
+        font-size: 13px;
+      }
+
+      .top.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      @media (max-width: 900px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+
+        .split {
+          grid-template-columns: 1fr;
+        }
+
+        .runbook-grid {
+          grid-template-columns: 1fr;
+        }
+
+        nav.primary {
+          justify-content: flex-start;
+        }
+
+        .brand {
+          min-width: auto;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html:focus-within {
+          scroll-behavior: auto;
+        }
+
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="topbar" role="banner">
+      <div class="container">
+        <div class="topbar-inner">
+          <a class="brand" href="#topo" aria-label="Ir para o topo">
+            <span class="logo" aria-hidden="true"></span>
+            <span class="brand-title">
+              <strong>DevOps & DataOps</strong>
+              <span>CI/CD • Runbooks • GitHub Actions</span>
+            </span>
+          </a>
+          <nav class="primary" aria-label="Navegação principal">
+            <a class="navlink" href="#fundamentos">Fundamentos</a>
+            <a class="navlink" href="#calms">CALMS</a>
+            <a class="navlink" href="#sdlc">SDLC</a>
+            <a class="navlink" href="#shiftleft">Shift Left</a>
+            <a class="navlink" href="#cicd">CI/CD</a>
+            <a class="navlink" href="#runbook">Runbook</a>
+            <a class="navlink" href="#projeto">Projeto</a>
+            <a class="navlink" href="#referencias">Referências</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main id="conteudo" class="container" role="main">
+      <section class="hero" id="topo">
+        <div class="hero-grid">
+          <article class="hero-card" aria-label="Resumo da disciplina">
+            <div class="kicker">
+              <span class="pill"><span class="dot" aria-hidden="true"></span>Deploy via GitHub Actions</span>
+              <span class="pill" title="Conteúdo condensado e original para a atividade prática">
+                Página única • moderna • objetiva
+              </span>
+            </div>
+            <h1>DevOps & DataOps, na prática.</h1>
+            <p class="subtitle">
+              Uma síntese do que realmente importa para entregar com qualidade: cultura, automação,
+              ciclos (SDLC), testes antecipados (Shift Left), pipelines CI/CD e runbooks para responder
+              a incidentes com consistência.
+            </p>
+            <div class="meta" aria-label="Metadados">
+              <span class="pill"><strong>Profª:</strong>&nbsp;Debora Batista Paulo</span>
+              <span class="pill"><strong>Autor:</strong>&nbsp;<span id="autor">[Seu nome aqui]</span></span>
+              <span class="pill"><strong>Entrega:</strong>&nbsp;GitHub Pages</span>
+            </div>
+          </article>
+
+          <aside class="hero-side" aria-label="Guia rápido">
+            <div class="statbox">
+              <h2>Mapa mental em 4 frases</h2>
+              <p class="mini">
+                DevOps derruba o muro entre desenvolvimento e operações. DataOps derruba o muro entre
+                engenharia de dados e quem consome dados. CI/CD automatiza validações e deploy.
+                Runbooks reduzem improviso em incidentes.
+              </p>
+            </div>
+            <div class="statbox">
+              <h2>Checklist de uma entrega “DevOps”</h2>
+              <ul class="list">
+                <li class="li">
+                  <span class="icon" aria-hidden="true">1</span>
+                  <span><strong>Versionar</strong> com Git e trabalhar em pequenas mudanças.</span>
+                </li>
+                <li class="li">
+                  <span class="icon" aria-hidden="true">2</span>
+                  <span><strong>Automatizar</strong> validações (CI): checagens, testes e padrões.</span>
+                </li>
+                <li class="li">
+                  <span class="icon" aria-hidden="true">3</span>
+                  <span><strong>Publicar</strong> (CD): deploy repetível e rastreável.</span>
+                </li>
+                <li class="li">
+                  <span class="icon" aria-hidden="true">4</span>
+                  <span><strong>Operar</strong>: logs/monitoramento + runbook para incidentes.</span>
+                </li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="fundamentos" aria-label="Fundamentos">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Da cascata à engenharia moderna</h2>
+            <p class="section-desc">
+              O ponto central da evolução foi reduzir custo de mudança e detectar erros cedo. O DevOps
+              não é “uma ferramenta”, é uma forma de trabalhar com responsabilidade compartilhada.
+            </p>
+          </div>
+          <div class="tagrow" aria-label="Tags">
+            <span class="tag devops">DevOps</span>
+            <span class="tag dataops">DataOps</span>
+            <span class="tag shift">Shift Left</span>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="card">
+            <h3>Por que o Waterfall falha em software comercial?</h3>
+            <p>
+              Porque requisitos mudam. Em cascata, testes e validações costumam acontecer tarde,
+              então o custo de corrigir aumenta e a equipe sofre com “surpresas” perto do prazo.
+            </p>
+            <div class="tagrow">
+              <span class="tag">rigidez</span>
+              <span class="tag">testes tardios</span>
+              <span class="tag">custo 50× no final</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>DevOps: unir o que nunca deveria ter sido separado</h3>
+            <p>
+              DevOps integra Dev e Ops para reduzir tempo entre desenvolvimento e entrega, aumentar
+              confiabilidade e automatizar o ciclo de vida: build, testes, deploy e monitoramento.
+            </p>
+            <div class="tagrow">
+              <span class="tag devops">cultura</span>
+              <span class="tag devops">automação</span>
+              <span class="tag devops">feedback contínuo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 12px">
+          <h3>Onde entra o DataOps?</h3>
+          <p>
+            Se no DevOps o problema era o muro entre Dev e Ops, no DataOps o problema é o muro
+            entre engenharia de dados e consumidores de dados (cientistas, analistas e negócio).
+            DataOps aplica os mesmos princípios ao fluxo de valor de dados: automação de pipelines,
+            qualidade, governança e colaboração.
+          </p>
+        </div>
+      </section>
+
+      <section id="calms" aria-label="Pilares CALMS">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">CALMS: os pilares do DevOps</h2>
+            <p class="section-desc">
+              Sem CALMS, DevOps vira só ferramenta. Com CALMS, vira transformação sustentável.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid-3" role="list">
+          <article class="card" role="listitem">
+            <h3>C — Culture</h3>
+            <p>Confiança, colaboração, comunicação e responsabilidade compartilhada.</p>
+          </article>
+          <article class="card" role="listitem">
+            <h3>A — Automation</h3>
+            <p>Automatizar pipeline CI/CD, testes, deploy e tarefas repetitivas com rastreabilidade.</p>
+          </article>
+          <article class="card" role="listitem">
+            <h3>L — Lean</h3>
+            <p>Trabalhar em pequenos lotes, reduzir desperdício e manter foco no fluxo de valor.</p>
+          </article>
+          <article class="card" role="listitem">
+            <h3>M — Measurement</h3>
+            <p>Medir para melhorar: métricas, feedback loops e decisões guiadas por dados.</p>
+          </article>
+          <article class="card" role="listitem">
+            <h3>S — Sharing</h3>
+            <p>Compartilhar conhecimento, ferramentas, métricas e aprendizados entre equipes.</p>
+          </article>
+          <article class="card" role="listitem">
+            <h3>Resultado esperado</h3>
+            <p>Entregas mais rápidas e confiáveis, com menos retrabalho e menos incidentes em produção.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="sdlc" aria-label="SDLC e ciclo de vida">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">SDLC + ciclo DevOps: o “mapa” da entrega</h2>
+            <p class="section-desc">
+              O SDLC organiza o desenvolvimento; no contexto DevOps/DataOps, ele se integra à automação
+              e ao aprendizado contínuo.
+            </p>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="card">
+            <h3>SDLC (visão prática)</h3>
+            <div class="timeline" aria-label="Etapas do SDLC">
+              <div class="step">
+                <div class="label"><strong>Ideia</strong><span>Por que?</span></div>
+                <p>Definir problema, stakeholders e objetivo de negócio.</p>
+              </div>
+              <div class="step">
+                <div class="label"><strong>Planejamento</strong><span>Como?</span></div>
+                <p>Requisitos, roadmap e riscos. Sem isso, “caos a mais”.</p>
+              </div>
+              <div class="step">
+                <div class="label"><strong>Desenvolvimento</strong><span>Construir</span></div>
+                <p>Codificar com padrões (style guides) e revisão de código.</p>
+              </div>
+              <div class="step">
+                <div class="label"><strong>Teste</strong><span>Validar</span></div>
+                <p>Testes cedo e frequentes (Shift Left) para reduzir custo.</p>
+              </div>
+              <div class="step">
+                <div class="label"><strong>Entrega</strong><span>Release</span></div>
+                <p>Empacotar e preparar a versão com rastreabilidade.</p>
+              </div>
+              <div class="step">
+                <div class="label"><strong>Operação</strong><span>Run</span></div>
+                <p>Disponibilidade, observabilidade, resposta a incidentes.</p>
+              </div>
+              <div class="step">
+                <div class="label"><strong>Manutenção</strong><span>Melhorar</span></div>
+                <p>Correções, melhorias e aprendizado para o próximo ciclo.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Ciclo de vida DevOps (8 etapas)</h3>
+            <p style="margin: 0 0 10px; color: var(--muted); font-size: 13px">
+              Um fluxo iterativo: planejamento → codificação → build → teste → lançamento → implementação → operar → monitorar.
+            </p>
+            <table class="table" aria-label="Ciclo DevOps em 8 etapas">
+              <thead>
+                <tr>
+                  <th>Etapa</th>
+                  <th>Foco</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Planejar</td>
+                  <td>Backlog e prioridades orientadas por feedback.</td>
+                </tr>
+                <tr>
+                  <td>Codificar</td>
+                  <td>Pequenas mudanças, revisão por pares e padrões.</td>
+                </tr>
+                <tr>
+                  <td>Build</td>
+                  <td>Integrar e empacotar; preparar artefatos.</td>
+                </tr>
+                <tr>
+                  <td>Testar</td>
+                  <td>Testes automatizados e contínuos; linting.</td>
+                </tr>
+                <tr>
+                  <td>Lançar</td>
+                  <td>Verificações finais e conformidade.</td>
+                </tr>
+                <tr>
+                  <td>Implementar</td>
+                  <td>Deploy em produção com segurança e repetibilidade.</td>
+                </tr>
+                <tr>
+                  <td>Operar</td>
+                  <td>Disponibilidade, performance e confiabilidade.</td>
+                </tr>
+                <tr>
+                  <td>Monitorar</td>
+                  <td>Métricas, logs e feedback para o próximo ciclo.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="shiftleft" aria-label="Shift Left">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Shift Left: qualidade começa cedo</h2>
+            <p class="section-desc">
+              Em vez de esperar as fases finais, o Shift Left “puxa” testes e validações para o início.
+              Isso reduz retrabalho, surpresa e custo.
+            </p>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="card">
+            <h3>O que muda na prática</h3>
+            <div class="callout">
+              <p><strong>Antes:</strong> testar só no final → bugs caros e correções apressadas.</p>
+              <p><strong>Depois:</strong> testar cedo e com frequência → feedback rápido e entregas seguras.</p>
+              <p>
+                A CI é uma materialização prática do Shift Left: cada commit dispara validações
+                automáticas antes de chegar à produção.
+              </p>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Tipos de testes (Shift Left)</h3>
+            <div class="tagrow" aria-label="Tipos de testes">
+              <span class="tag shift">unidade</span>
+              <span class="tag shift">integração</span>
+              <span class="tag shift">API/contrato</span>
+              <span class="tag shift">IU</span>
+            </div>
+            <p style="margin-top: 10px; color: var(--muted); font-size: 13px">
+              O objetivo não é “testar mais por testar”, e sim reduzir risco antes do deploy. Em dados,
+              isso vira validação de schema, nulos, consistência de colunas e regras de qualidade.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="cicd" aria-label="CI/CD e pipelines">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">CI / CD / Pipeline: a esteira automatizada</h2>
+            <p class="section-desc">
+              CI integra e valida continuamente. CD publica continuamente. Juntas, formam a esteira de automação.
+            </p>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="card">
+            <h3>Fluxo típico de CI</h3>
+            <div class="timeline" aria-label="Fluxo de CI">
+              <div class="step">
+                <div class="label"><strong>Commit/Push</strong><span>gatilho</span></div>
+                <p>Código (ou dados) novos entram no repositório.</p>
+              </div>
+              <div class="step">
+                <div class="label"><strong>Trigger</strong><span>Actions</span></div>
+                <p>O GitHub Actions detecta mudança e inicia o workflow.</p>
+              </div>
+              <div class="step">
+                <div class="label"><strong>Build/Setup</strong><span>ambiente</span></div>
+                <p>Configura ferramentas/versões e prepara execução.</p>
+              </div>
+              <div class="step">
+                <div class="label"><strong>Validações</strong><span>qualidade</span></div>
+                <p>Em DevOps: linting, testes e segurança. Em DataOps: schema e consistência.</p>
+              </div>
+              <div class="step">
+                <div class="label"><strong>Relatório</strong><span>logs</span></div>
+                <p>Logs e status (sucesso/falha) ficam registrados e auditáveis.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>DevOps vs DataOps (comparação rápida)</h3>
+            <table class="table" aria-label="Comparação DevOps e DataOps">
+              <thead>
+                <tr>
+                  <th>Dimensão</th>
+                  <th>DevOps</th>
+                  <th>DataOps</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Foco</td>
+                  <td>Código</td>
+                  <td>Dados</td>
+                </tr>
+                <tr>
+                  <td>Validações</td>
+                  <td>Testes e qualidade de código</td>
+                  <td>Schema, qualidade e consistência de dados</td>
+                </tr>
+                <tr>
+                  <td>Benefício</td>
+                  <td>Menos falhas em produção</td>
+                  <td>Dados mais confiáveis e auditáveis</td>
+                </tr>
+                <tr>
+                  <td>Cultura</td>
+                  <td>Integra Dev e Ops</td>
+                  <td>Integra Dev, Data e Ops</td>
+                </tr>
+              </tbody>
+            </table>
+            <p style="margin-top: 10px; color: var(--muted); font-size: 13px">
+              Ferramentas aparecem, mas o diferencial é processo + colaboração + automação.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="runbook" aria-label="Runbook">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Runbook: resposta consistente a incidentes</h2>
+            <p class="section-desc">
+              Runbooks reduzem pânico e improviso: definem sintomas, passos de diagnóstico, critérios de sucesso e escalonamento.
+            </p>
+          </div>
+        </div>
+
+        <div class="runbook-grid">
+          <div class="runbook-card">
+            <h3>Identificação do problema (exemplo)</h3>
+            <ul>
+              <li><strong>Sintoma:</strong> HTTP 500 (Internal Server Error) na API de cadastro.</li>
+              <li><strong>Impacto:</strong> novos clientes não cadastrados, operação comercial travada, SLA em risco.</li>
+              <li><strong>Alerta:</strong> escalar se persistir após os passos do runbook.</li>
+            </ul>
+          </div>
+          <div class="runbook-card">
+            <h3>Possíveis causas (priorizar investigação)</h3>
+            <ul>
+              <li>Banco de dados fora do ar (conexão falhou / serviço inativo).</li>
+              <li>Bug em código recente (deploy introduziu erro).</li>
+              <li>Serviço da API parado (processo encerrado).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 12px">
+          <h3>Passo a passo (5 etapas)</h3>
+          <ol class="runbook-steps">
+            <li>Verificar se a API está ativa (ex.: endpoint de status).</li>
+            <li>Checar logs do sistema e procurar erros recentes.</li>
+            <li>Verificar conexão com o banco de dados (testar acesso).</li>
+            <li>Reiniciar o serviço da API (ex.: <span class="kbd">npm start</span> em cenários Node).</li>
+            <li>Testar o endpoint de cadastro (ex.: <span class="kbd">POST /api/clientes</span>).</li>
+          </ol>
+          <div class="callout" style="margin-top: 12px">
+            <p>
+              <strong>Critério de sucesso:</strong> API volta a responder com HTTP 200, cadastro funciona, logs sem erros críticos e banco conectado.
+            </p>
+            <p>
+              <strong>Escalonamento:</strong> acionar responsável técnico, registrar incidente com hora/causa/ações e comunicar stakeholders.
+            </p>
+          </div>
+          <p style="margin-top: 10px; color: var(--muted); font-size: 13px">
+            Para modelagem e documentação de runbooks, uma boa referência é o template da Atlassian.
+          </p>
+        </div>
+      </section>
+
+      <section id="projeto" aria-label="Projeto prático da disciplina">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Projeto prático: CI/CD + GitHub Pages</h2>
+            <p class="section-desc">
+              Esta entrega simula um fluxo real DevOps: validar alterações no site (CI) e publicar automaticamente (CD).
+            </p>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="card">
+            <h3>Estrutura do repositório</h3>
+            <p style="margin: 0 0 10px; color: var(--muted); font-size: 13px">
+              Organização mínima conforme solicitado na atividade prática.
+            </p>
+            <table class="table" aria-label="Estrutura de pastas">
+              <thead>
+                <tr>
+                  <th>Arquivo/Pasta</th>
+                  <th>Função</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="kbd">site/index.html</span></td>
+                  <td>Página única do projeto.</td>
+                </tr>
+                <tr>
+                  <td><span class="kbd">.github/workflows/ci.yml</span></td>
+                  <td>Valida que o arquivo existe e faz checagens leves de consistência.</td>
+                </tr>
+                <tr>
+                  <td><span class="kbd">.github/workflows/cd.yml</span></td>
+                  <td>Publica a pasta <span class="kbd">site/</span> no GitHub Pages.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <h3>Onde ver evidências</h3>
+            <div class="callout">
+              <p>
+                <strong>Logs do pipeline:</strong> guia <span class="kbd">Actions</span> no GitHub, com cada execução do workflow.
+              </p>
+              <p>
+                <strong>Artefato de deploy:</strong> o CD faz upload do conteúdo de <span class="kbd">site/</span> para publicar no Pages.
+              </p>
+              <p>
+                <strong>Resultado final:</strong> o site fica acessível por uma URL do GitHub Pages, com histórico de deploys.
+              </p>
+            </div>
+            <p style="margin-top: 10px; color: var(--muted); font-size: 13px">
+              Dica: no GitHub Actions, workflows podem ser disparados por push, pull request ou manualmente
+              (<span class="kbd">workflow_dispatch</span>).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="referencias" aria-label="Referências">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Referências e documentação</h2>
+            <p class="section-desc">
+              Leituras recomendadas pela professora para aprofundar conceitos e boas práticas.
+            </p>
+          </div>
+        </div>
+
+        <div class="refs">
+          <a class="ref" href="https://www.ibm.com/br-pt/think/topics/devops" target="_blank" rel="noreferrer">
+            <i aria-hidden="true"></i>
+            <span><strong>IBM:</strong> O que é DevOps?</span>
+          </a>
+          <a
+            class="ref"
+            href="https://www.atlassian.com/br/software/confluence/templates/devops-runbook"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <i aria-hidden="true"></i>
+            <span><strong>Atlassian:</strong> Template de runbook DevOps</span>
+          </a>
+          <a
+            class="ref"
+            href="https://learn.microsoft.com/pt-br/azure/automation/troubleshoot/managed-identity"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <i aria-hidden="true"></i>
+            <span><strong>Microsoft Learn:</strong> Troubleshoot Managed Identity (Azure Automation)</span>
+          </a>
+          <a class="ref" href="https://docs.github.com/pt/actions" target="_blank" rel="noreferrer">
+            <i aria-hidden="true"></i>
+            <span><strong>GitHub:</strong> Documentação do GitHub Actions</span>
+          </a>
+        </div>
+      </section>
+
+      <footer role="contentinfo">
+        <div class="footer-grid">
+          <div>
+            <strong style="color: rgba(255, 255, 255, 0.9)">DevOps & DataOps — entrega acadêmica</strong>
+            <div style="margin-top: 6px">
+              Conteúdo condensado a partir do material da disciplina (Profª Debora Batista Paulo) e documentação de referência.
+            </div>
+          </div>
+          <div style="text-align: right; color: rgba(255, 255, 255, 0.58)">
+            <div id="buildstamp">Build local</div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <div class="top" id="topBtn" aria-hidden="true">
+      <a href="#topo" aria-label="Voltar ao topo">
+        <span style="display: inline-block; transform: translateY(-1px)">↑</span> Topo
+      </a>
+    </div>
+
+    <script>
+      (function () {
+        var autorEl = document.getElementById("autor");
+        var buildEl = document.getElementById("buildstamp");
+        var topBtn = document.getElementById("topBtn");
+        var navLinks = Array.prototype.slice.call(document.querySelectorAll("nav.primary a.navlink"));
+
+        // Permite sobrescrever o autor via querystring: ?autor=Seu%20Nome
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var autor = params.get("autor");
+          if (autor && autor.trim()) autorEl.textContent = autor.trim();
+        } catch (e) {
+          // No-op: navegadores antigos ou ambientes restritos.
+        }
+
+        // Marca build com data/hora local (ajuda na evidência de deploy).
+        try {
+          var now = new Date();
+          buildEl.textContent =
+            "Gerado em " +
+            now.toLocaleString("pt-BR", { dateStyle: "medium", timeStyle: "short" });
+        } catch (e) {
+          // No-op
+        }
+
+        function setActiveLink() {
+          var y = window.scrollY || document.documentElement.scrollTop || 0;
+          var best = null;
+          for (var i = 0; i < navLinks.length; i++) {
+            var href = navLinks[i].getAttribute("href") || "";
+            if (!href.startsWith("#")) continue;
+            var id = href.slice(1);
+            var sec = document.getElementById(id);
+            if (!sec) continue;
+            var top = sec.getBoundingClientRect().top + y;
+            if (top <= y + 120) best = navLinks[i];
+          }
+          for (var j = 0; j < navLinks.length; j++) navLinks[j].removeAttribute("aria-current");
+          if (best) best.setAttribute("aria-current", "page");
+        }
+
+        function setTopButton() {
+          var y = window.scrollY || document.documentElement.scrollTop || 0;
+          if (y > 600) topBtn.classList.add("visible");
+          else topBtn.classList.remove("visible");
+        }
+
+        window.addEventListener(
+          "scroll",
+          function () {
+            setActiveLink();
+            setTopButton();
+          },
+          { passive: true }
+        );
+
+        setActiveLink();
+        setTopButton();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+name: CI - Validar site HTML
+
+on:
+  push:
+    paths:
+      - "site/**"
+  workflow_dispatch:
+
+jobs:
+  validar-html:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositório
+        uses: actions/checkout@v4
+
+      - name: Verificar se existe site/index.html
+        run: |
+          if [ ! -f "site/index.html" ]; then
+            echo "Arquivo site/index.html não encontrado!"
+            exit 1
+          fi
+          echo "Arquivo encontrado com sucesso!"
+
+      - name: Checagens leves de consistência do HTML
+        run: |
+          set -euo pipefail
+          file="site/index.html"
+
+          grep -qi "<!doctype html" "$file"
+          grep -qi "<title>" "$file"
+          grep -qi "</html>" "$file"
+          grep -qi "<main" "$file"
+
+          echo "Checagens básicas OK."
+
+  notificar:
+    runs-on: ubuntu-latest
+    needs: validar-html
+
+    steps:
+      - name: Evento disparado
+        run: echo "Alteração em site/** detectada e validada com sucesso!"
