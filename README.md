@@ -1,8 +1,22 @@
-# DevOps & DataOps — Site + CI/CD (GitHub Pages)
+# Entrega — DevOps & DataOps (CI/CD + GitHub Pages)
+
+**Aluno:** Adriano Carvalho dos Santos  
+**RA:** 10747203  
+**Disciplina:** DevOps & DataOps  
+**Professora:** Debora Batista Paulo  
 
 Entrega acadêmica em **uma página HTML** com resumo de DevOps & DataOps (CALMS, SDLC, Shift Left, CI/CD e runbooks), publicada automaticamente no **GitHub Pages** usando **GitHub Actions**.
 
-## Estrutura
+## 1) Objetivo
+
+Construir um projeto simples com **uma página HTML** e automatizar um pipeline **CI/CD** com **GitHub Actions**, publicando a página no **GitHub Pages**, conforme a atividade prática de “Pipeline Automatizado CI/CD”.
+
+## 2) Repositório e site publicado
+
+- **Repositório:** `git@github.com:MagnaSoluto/DataOps.git`
+- **URL do GitHub Pages:** `https://magnasoluto.github.io/DataOps/`
+
+## 3) Estrutura do projeto
 
 ```text
 .
@@ -14,19 +28,57 @@ Entrega acadêmica em **uma página HTML** com resumo de DevOps & DataOps (CALMS
         └── cd.yml
 ```
 
-## Como funciona
+## 4) Conteúdo da página (resumo)
 
-- **CI** (`.github/workflows/ci.yml`)
-  - Dispara em mudanças em `site/**`
-  - Valida que `site/index.html` existe
-  - Faz checagens básicas (DOCTYPE, title, main, fechamento do HTML)
+A página `site/index.html` condensa os principais tópicos vistos em aula, incluindo:
 
-- **CD** (`.github/workflows/cd.yml`)
-  - Dispara em `push` na branch `main` (quando muda `site/**`)
-  - Faz upload **somente** da pasta `site/`
-  - Publica no GitHub Pages
+- Evolução do desenvolvimento: **Waterfall → Ágil → DevOps → DataOps**
+- Pilares **CALMS** (Culture, Automation, Lean, Measurement, Sharing)
+- **SDLC** e ciclo de vida DevOps
+- **Shift Left** e tipos de testes
+- Conceitos de **CI / CD / Pipeline** e comparação DevOps vs DataOps
+- **Runbook** prático (sintoma, impacto, causas, passo a passo e escalonamento)
+- Seção de **referências** com links de documentação sugeridos
 
-## Publicação (GitHub Pages)
+## 5) CI (Integração Contínua) — `.github/workflows/ci.yml`
+
+**Quando executa**
+
+- Em todo `push` que altera `site/**`
+- Também pode ser executado manualmente (`workflow_dispatch`)
+
+**O que valida**
+
+- Verifica se existe `site/index.html`
+- Checagens leves de consistência do HTML:
+  - `<!doctype html`
+  - `<title>`
+  - `</html>`
+  - `<main`
+
+**Como evidenciar**
+
+- Acesse **Actions** → workflow **“CI - Validar site HTML”** → veja o log da execução verde.
+
+## 6) CD (Deploy Contínuo) — `.github/workflows/cd.yml`
+
+**Quando executa**
+
+- Em `push` na branch `main` com mudanças em `site/**`
+- Também pode ser executado manualmente (`workflow_dispatch`)
+
+**O que faz**
+
+- Configura o GitHub Pages (com `enablement: true` para habilitar/criar Pages se necessário)
+- Faz upload **somente** da pasta `site/`
+- Publica no **GitHub Pages**
+
+**Como evidenciar**
+
+- Acesse **Actions** → workflow **“CD - Deploy para GitHub Pages”** → veja a execução verde.
+- Abra a URL do Pages e capture um print da página publicada (opcional).
+
+## 7) Publicação (GitHub Pages) — configuração inicial
 
 No GitHub, configure:
 
@@ -34,11 +86,20 @@ No GitHub, configure:
 2. Em **Build and deployment**, selecione **Source: GitHub Actions**
 3. Faça um push na `main` e acompanhe em **Actions**
 
-URL esperada (após o primeiro deploy):
+## 8) Como gerar o “arquivo do trabalho” para entregar (PDF)
 
-- `https://magnasoluto.github.io/DataOps/`
+Se a professora pedir um **arquivo** (PDF), a forma mais simples é gerar um PDF desta documentação e/ou do site:
 
-## Referências
+### Opção A — Gerar PDF deste `README.md`
+1. Abra o `README.md` no GitHub (ou no VSCode/Cursor)
+2. Use **Imprimir** (Ctrl/Cmd + P)
+3. Escolha **Salvar como PDF**
+
+### Opção B — Gerar PDF do site publicado
+1. Abra `https://magnasoluto.github.io/DataOps/`
+2. Ctrl/Cmd + P → **Salvar como PDF**
+
+## 9) Referências (links fornecidos)
 
 - IBM — DevOps: `https://www.ibm.com/br-pt/think/topics/devops`
 - Atlassian — Runbook template: `https://www.atlassian.com/br/software/confluence/templates/devops-runbook`
