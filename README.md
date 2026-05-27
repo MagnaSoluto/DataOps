@@ -86,18 +86,19 @@ No GitHub, configure:
 2. Em **Build and deployment**, selecione **Source: GitHub Actions**
 3. Faça um push na `main` e acompanhe em **Actions**
 
-## 8) Como gerar o “arquivo do trabalho” para entregar (PDF)
+## 8) Evidências da entrega (checklist final)
 
-Se a professora pedir um **arquivo** (PDF), a forma mais simples é gerar um PDF desta documentação e/ou do site:
+- [ ] **Site publicado** abre em: `https://magnasoluto.github.io/DataOps/`
+- [ ] **Workflow CI** executou e ficou verde: **CI - Validar site HTML**
+- [ ] **Workflow CD** executou e ficou verde: **CD - Deploy para GitHub Pages**
+- [ ] **Pages configurado** em **Settings → Pages** com **Source: GitHub Actions**
 
-### Opção A — Gerar PDF deste `README.md`
-1. Abra o `README.md` no GitHub (ou no VSCode/Cursor)
-2. Use **Imprimir** (Ctrl/Cmd + P)
-3. Escolha **Salvar como PDF**
+### Itens entregues no repositório
 
-### Opção B — Gerar PDF do site publicado
-1. Abra `https://magnasoluto.github.io/DataOps/`
-2. Ctrl/Cmd + P → **Salvar como PDF**
+- [x] `site/index.html` (página única, responsiva e moderna)
+- [x] `.github/workflows/ci.yml` (validação do site)
+- [x] `.github/workflows/cd.yml` (deploy no Pages)
+- [x] `README.md` (documentação final do trabalho)
 
 ## 9) Referências (links fornecidos)
 
