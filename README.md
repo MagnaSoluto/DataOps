@@ -222,10 +222,10 @@ DataOps/
 
 ### Artefatos entregues
 
-![index.html](https://img.shields.io/badge/site-index.html-entregue-success?style=flat-square&logo=html5)
-![ci.yml](https://img.shields.io/badge/.github-ci.yml-entregue-success?style=flat-square&logo=githubactions)
-![cd.yml](https://img.shields.io/badge/.github-cd.yml-entregue-success?style=flat-square&logo=githubpages)
-![readme](https://img.shields.io/badge/README.md-entregue-success?style=flat-square&logo=markdown)
+![index.html](https://img.shields.io/badge/site_index.html-entregue-brightgreen?style=flat-square&logo=html5&logoColor=white)
+![ci.yml](https://img.shields.io/badge/ci.yml-entregue-brightgreen?style=flat-square&logo=githubactions&logoColor=white)
+![cd.yml](https://img.shields.io/badge/cd.yml-entregue-brightgreen?style=flat-square&logo=github&logoColor=white)
+![readme](https://img.shields.io/badge/README.md-entregue-brightgreen?style=flat-square&logo=markdown&logoColor=white)
 
 ---
 
